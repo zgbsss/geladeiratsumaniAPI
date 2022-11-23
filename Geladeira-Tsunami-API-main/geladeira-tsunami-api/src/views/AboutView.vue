@@ -1,9 +1,10 @@
 <script>
 import axios from "axios";
+import { mapStores, mapState, mapActions} from 'pinia'
+import { useAuthStore } from "../stores/auth";
 export default {
   data() {
     return {
-      token: "dddd",
       dados: {},
       albums: [],
       artista: {},
@@ -12,7 +13,12 @@ export default {
       artista4: {},
     };
   },
+  computed: {
+    ...mapStores(useAuthStore),
+    ...mapState(useAuthStore, ['token'])
+  },
   methods: {
+    ...mapActions(useAuthStore, ['setToken']),
     getHashParams() {
       var hashParams = {};
       var e,
@@ -26,9 +32,11 @@ export default {
       return hashParams;
     },
   },
-  
   async created() {
-    this.token = this.$route.query["access_token"];
+  
+    this.setToken(this.$route.query["access_token"])
+    
+    console.log(this.token)
 
     let response = await axios.get("https://api.spotify.com/v1/me", {
       headers: {

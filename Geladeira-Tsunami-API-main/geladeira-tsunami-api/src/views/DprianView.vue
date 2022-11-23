@@ -1,11 +1,19 @@
 <script>
 import axios from "axios";
+import { mapStores, mapState } from "pinia"
+import { useAuthStore } from "../stores/auth"
 export default {
-    data() {
-      return{
-        albums: {},
-      };
-    },
+  data() {
+    return{
+      dados: {},
+      albums: [],
+      artista: {},
+     };
+  },
+  computed: {
+    ...mapStores(useAuthStore),
+    ...mapState(useAuthStore, ['token'])
+  },
   methods: {
     getHashParams() {
       var hashParams = {};
@@ -19,18 +27,44 @@ export default {
       }
       return hashParams;
     },
+    async getPreviewUrl(preview) {
+      const res = await axios.get(preview);
+      console.log(res);
+      return res.data;
+    },
   },
   async created() {
-    let response = await axios.get("https://api.spotify.com/v1/albums/2hPHncbZRuWiCBauEUJxyA?market=BR", {
-      headers: {
-        Authorization: `Bearer BQBRTR1DlM_10jxnyTISb9HxKe2HUE9Rj_jLoCCgg4rlExqrOtDjDX_VA4FUkXPmFw9ycSnpAEeQCHHshMcwguPQdLds129mn73TDM7_rT6YH5Hm7rQtbogbeass2NkuqLTgCLdI3qS_l8r5Db9V3hYsIPSvQkWvzLdhTy0Dbzok13t4_czOdk7PkSl1slGhzhERTYtvKwa14QEtj2ejbg`,
-      },
-    });
+    let response = await axios.get(
+      "https://api.spotify.com/v1/artists/2o8gT0fQmFxGNbowbdgeZe",
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
+    this.artista = response.data;
+    
+    response = await axios.get(
+      "https://api.spotify.com/v1/albums/2hPHncbZRuWiCBauEUJxyA?market=BR",
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
     this.albums = response.data;
   }
 }
-
 </script>
 <template>
-    <h2>{{ albums }}</h2>
+  <h1>{{ albums.name }}</h1>
+  <p>
+    {{ albums.copyrights }}
+    {{ albums.label }}
+  </p>
+  <p>
+    {{ artista.name }}
+    {{ artista.genres }}
+    {{ artista.followers }}
+  </p>
 </template>

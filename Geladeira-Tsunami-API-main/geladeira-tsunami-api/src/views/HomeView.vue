@@ -1,9 +1,19 @@
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
   <main>
-    <button><a href="http://localhost:8888">Entre Aqui :)</a></button>
+    <body>
+      <h1>Bem vindos ao TSIDGE</h1>
+      <a href="http://localhost:8888">
+        <button class="button">Entre aqui :)</button>
+      </a>
+    </body>
   </main>
 </template>
+
+<style scoped>
+body {
+  background-color: #2f413a;
+}
+
+</style>
